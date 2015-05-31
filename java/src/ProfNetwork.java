@@ -12,7 +12,7 @@
 //**********************************************************************************************************************************
 /*   SELIK :ALL OTHER FUNCTIONALITY HAS BEEN IMPLEMENTED AS SQL FUNCTIONS WITH ALL THE CHEKING DONE THERE TOO
 			FOR OUR CURRENT TO DO LIST, WE NEED TO IMPLEMENT THE FOLLOWING FUNCTIONALITY (part of queries provided)
-	
+
 	1)	SEARCH PEOPLE
 			QUERY
 				SELECT name FROM usr WHERE lower(name) LIKE lower('%TOY%');
@@ -21,14 +21,14 @@
 
 	2)	VIEW FRIENDS, THEN GO TO FRIENDS PROFILE
 			QUERY - VIEW FRIENDS
-				SELECT userid AS FRIEND(S) FROM connection WHERE connectionid = login and status = 'Accept' 
+				SELECT userid AS FRIEND(S) FROM connection WHERE connectionid = login and status = 'Accept'
 				UNION SELECT connectionid AS FRIEND(S) FROM connection WHERE userid = login and status = 'Accept';i
 			DISPLAY
 				???????????????????????????????????????????????????????????
 
 	3)	VIEW MESSAGES
 			QUERY - VIEW USERS WITH COMMUNICATIONS
-				SELECT senderid AS user FROM message WHERE receiverid = login 
+				SELECT senderid AS user FROM message WHERE receiverid = login
 				UNION SELECT receiverid AS user FROM message where senderid = login;
 			QUERY - VIEW COMMUNICATION BETWEEN USER AND SPECIFIC CONTACT
 				SELECT senderid, contents, sendtime FROM messages WHERE (senderid = login and receiverid = contact) or (senderid = contact and receiverid = login);
@@ -36,8 +36,8 @@
 				???????????????????????????????????????????????????????????
 
 	4)	WE NEED TO CALL SYSTEM("CLEAR") AND WHATEVER ELSE IS NEEDED TO MAKE THIS PRETTY
-	
-*/	
+
+*/
 //**********************************************************************************************************************************
 import java.sql.DriverManager;
 import java.sql.Connection;
@@ -284,11 +284,13 @@ public class ProfNetwork {
             System.out.println("---------");
             System.out.println("1. Create user");
             System.out.println("2. Log in");
+            System.out.println("3. Clear Screen");
             System.out.println("9. < EXIT");
             String authorisedUser = null;
             switch (readChoice()){
                case 1: CreateUser(esql); break;
                case 2: authorisedUser = LogIn(esql); break;
+               case 3: ClearConsole(); break;
                case 9: keepon = false; break;
                default : System.out.println("Unrecognized choice!"); break;
             }//end switch
@@ -301,6 +303,7 @@ public class ProfNetwork {
                 System.out.println("2. Update Profile");
                 System.out.println("3. Write a new message");
                 System.out.println("4. Send Friend Request");
+                //System.out.println("5. Clear Screen");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
@@ -308,7 +311,7 @@ public class ProfNetwork {
                   //case 2: UpdateProfile(esql); break;
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
-                  case 9: usermenu = false; autorizedUser = null ; break;
+                  //case 9: usermenu = false; authorizedUser = null ; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
               }
@@ -401,6 +404,27 @@ public class ProfNetwork {
          return null;
       }
    }//end
+
+  public static void ClearConsole(){
+     try
+     {
+        final String os = System.getProperty("os.name");
+        if (os.contains("Windows"))
+        {
+            Runtime.getRuntime().exec("cls");
+        }
+        else
+        {
+            Runtime.getRuntime().exec("clear");
+        }
+     }
+     catch (final Exception e)
+     {
+
+     }
+
+  }
+
 
 // Rest of the functions definition go in here
 
