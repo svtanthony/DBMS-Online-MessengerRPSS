@@ -297,7 +297,9 @@ public class ProfNetwork {
             if (authorisedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
+				System.out.println("\u001b[2J");
                 System.out.println("MAIN MENU");
+				System.out.flush();
                 System.out.println("---------");
                 System.out.println("1. Goto Friend List");
                 System.out.println("2. Update Profile");
