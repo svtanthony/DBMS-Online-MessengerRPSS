@@ -279,27 +279,33 @@ public class ProfNetwork {
 
          boolean keepon = true;
          while(keepon) {
-            // These are sample SQL statements
+			System.out.println("\u001b[2J");
+			System.out.println(
+			"\n\n*******************************************************\n" +
+			"   	  	  Welcome - Log In/Create Account		  \n" +
+			"*******************************************************\n");			
             System.out.println("MAIN MENU");
             System.out.println("---------");
             System.out.println("1. Create user");
             System.out.println("2. Log in");
-            System.out.println("3. Clear Screen");
             System.out.println("9. < EXIT");
             String authorisedUser = null;
             switch (readChoice()){
                case 1: CreateUser(esql); break;
                case 2: authorisedUser = LogIn(esql); break;
-               case 3: ClearConsole(); break;
                case 9: keepon = false; break;
                default : System.out.println("Unrecognized choice!"); break;
             }//end switch
             if (authorisedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
-				System.out.println("\u001b[2J");
+		//		System.out.println("\u001b[2J");
+		//		System.out.println(
+		//		"\n\n*******************************************************\n" +
+		//		"              Welcome - User Menu                    \n" +
+		//		"*******************************************************\n");
                 System.out.println("MAIN MENU");
-				System.out.flush();
+		//		System.out.flush();
                 System.out.println("---------");
                 System.out.println("1. Goto Friend List");
                 System.out.println("2. Update Profile");
@@ -309,7 +315,7 @@ public class ProfNetwork {
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
-                  //case 1: FriendList(esql); break;
+                  case 1: FriendList(esql,authorisedUser); break;
                   //case 2: UpdateProfile(esql); break;
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
@@ -338,7 +344,7 @@ public class ProfNetwork {
    public static void Greeting(){
       System.out.println(
          "\n\n*******************************************************\n" +
-         "              User Interface      	               \n" +
+         "              Online Messenger      	               \n" +
          "*******************************************************\n");
    }//end Greeting
 
@@ -406,26 +412,18 @@ public class ProfNetwork {
          return null;
       }
    }//end
+	
+	public static void FriendList(ProfNetwork esql, String user){
+		try{
+			String query = "SELECT userid AS FRIEND FROM connection WHERE connectionid = 'Giovani' AND status = 'Accept' UNION SELECT connectionid AS FRIEND FROM connection WHERE userid = 'Giovani' and status = 'Accept';";
+			//List<List<String> friends = esql.executeQueryAndReturnResult(query);
+			int friends = esql.executeQueryAndPrintResult(query);
+		}catch(Exception e){
+        	 System.err.println (e.getMessage ());
+		}
+	}	
 
-  public static void ClearConsole(){
-     try
-     {
-        final String os = System.getProperty("os.name");
-        if (os.contains("Windows"))
-        {
-            Runtime.getRuntime().exec("cls");
-        }
-        else
-        {
-            Runtime.getRuntime().exec("clear");
-        }
-     }
-     catch (final Exception e)
-     {
 
-     }
-
-  }
 
 
 // Rest of the functions definition go in here
