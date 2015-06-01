@@ -299,18 +299,17 @@ public class ProfNetwork {
             if (authorisedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
-		//		System.out.println("\u001b[2J");
-		//		System.out.println(
-		//		"\n\n*******************************************************\n" +
-		//		"              Welcome - User Menu                    \n" +
-		//		"*******************************************************\n");
+				System.out.println(
+				"\n\n*******************************************************\n" +
+				"              Welcome - User Menu                    \n" +
+				"*******************************************************\n");
                 System.out.println("MAIN MENU");
-		//		System.out.flush();
                 System.out.println("---------");
-                System.out.println("1. Goto Friend List");
+                System.out.println("1. Go to Friend List");
                 System.out.println("2. Update Profile");
                 System.out.println("3. Write a new message");
                 System.out.println("4. Send Friend Request");
+                System.out.println("5. View Others Friends List");
                 //System.out.println("5. Clear Screen");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
@@ -319,6 +318,7 @@ public class ProfNetwork {
                   //case 2: UpdateProfile(esql); break;
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
+                  case 5: OtherFriendList(esql); break;
                   case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -415,13 +415,25 @@ public class ProfNetwork {
 	
 	public static void FriendList(ProfNetwork esql, String user){
 		try{
-			String query = "SELECT userid AS FRIEND FROM connection WHERE connectionid = 'Giovani' AND status = 'Accept' UNION SELECT connectionid AS FRIEND FROM connection WHERE userid = 'Giovani' and status = 'Accept';";
+			System.out.println("\u001b[2J");
+			System.out.flush();
+			String query = String.format("SELECT userid AS FRIEND FROM connection WHERE connectionid = '%s' AND status = 'Accept' UNION SELECT connectionid AS FRIEND FROM connection WHERE userid = '%s' and status = 'Accept';", user,user);
 			//List<List<String> friends = esql.executeQueryAndReturnResult(query);
 			int friends = esql.executeQueryAndPrintResult(query);
 		}catch(Exception e){
         	 System.err.println (e.getMessage ());
 		}
-	}	
+	}
+	public static void OtherFriendList(ProfNetwork esql){
+		try{
+			System.out.println("Enter the username of the person you want to view friends for");
+			String otherUser = in.readLine();
+			System.out.println("\n");
+			FriendList(esql,otherUser);
+		}catch(Exception e){
+			System.err.println (e.getMessage());
+		}
+	}
 
 
 
