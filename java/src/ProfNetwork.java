@@ -313,7 +313,7 @@ public class ProfNetwork {
                   //case 2: UpdateProfile(esql); break;
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
-                  //case 9: usermenu = false; authorizedUser = null ; break;
+                  case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
               }
