@@ -282,7 +282,7 @@ public class ProfNetwork {
 			"\n\n*******************************************************\n" +
 			"   	  	  Welcome - Log In/Create Account		  \n" +
 			"*******************************************************\n");			
-            System.out.println("MAIN MENU");
+            System.out.println("\033[1;32mMAIN MENU\033[0m");
             System.out.println("---------");
             System.out.println("1. Create user");
             System.out.println("2. Log in");
@@ -433,7 +433,17 @@ public class ProfNetwork {
 			System.err.println (e.getMessage());
 		}
 	}
-
+	public static void Profile(ProfNetwork esql, String user){
+		try{
+			//contact
+			String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
+			String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
+			String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
+		}catch(Exception e){
+			System.err.println (e.getMessage());
+		}
+		
+	}
 
 
 
