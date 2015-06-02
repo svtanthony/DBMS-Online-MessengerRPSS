@@ -35,8 +35,6 @@
 			DISPLAY
 				???????????????????????????????????????????????????????????
 
-	4)	WE NEED TO CALL SYSTEM("CLEAR") AND WHATEVER ELSE IS NEEDED TO MAKE THIS PRETTY
-
 */
 //**********************************************************************************************************************************
 import java.sql.DriverManager;
@@ -303,7 +301,8 @@ public class ProfNetwork {
 				"\n\n*******************************************************\n" +
 				"              Welcome - User Menu                    \n" +
 				"*******************************************************\n");
-                System.out.println("MAIN MENU");
+                //cout <<"\033[1;32m" << signature <<"\033[3;31m" <<  workingDir << " $ " << "\033[0m";
+		System.out.println("\033[1;32mMAIN MENU\033[0m");
                 System.out.println("---------");
                 System.out.println("1. Go to Friend List");
                 System.out.println("2. Update Profile");
