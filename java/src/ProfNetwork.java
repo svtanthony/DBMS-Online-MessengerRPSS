@@ -154,6 +154,19 @@ public class ProfNetwork {
       return rowCount;
    }//end executeQuery
 
+	public String executeQueryStr (String query) throws SQLException { 
+		// creates a statement object 
+		Statement stmt = this._connection.createStatement(); 
+
+		// issues the query instruction 
+		ResultSet rs = stmt.executeQuery(query); 
+		rs.next(); 
+
+		String retVal = rs.getString("retVal"); 
+		stmt.close(); 
+		return retVal; 
+	} 
+
    /**
     * Method to execute an input query SQL instruction (i.e. SELECT).  This
     * method issues the query to the DBMS and returns the results as
@@ -371,46 +384,59 @@ public class ProfNetwork {
     * Creates a new user with privided login, passowrd and phoneNum
     * An empty block and contact list would be generated and associated with a user
     **/
-   public static void CreateUser(ProfNetwork esql){
+public static void CreateUser(ProfNetwork esql){
       try{
-         System.out.print("\tEnter user login: ");
-         String login = in.readLine();
-         System.out.print("\tEnter user password: ");
-         String password = in.readLine();
-         System.out.print("\tEnter user email: ");
-         String email = in.readLine();
+		System.out.print("\tEnter user login: ");
+		String login = in.readLine();
+		System.out.print("\tEnter user password: ");
+		String password = in.readLine();
+		System.out.print("\tEnter user email: ");
+		String email = in.readLine();
 
-	 //Creating empty contact\block lists for a user
-	 String query = String.format("INSERT INTO USR (userId, password, email, contact_list) VALUES ('%s','%s','%s')", login, password, email);
+		//Creating empty contact\block lists for a user
+		String query = String.format("SELECT newAccount('%s','%s','%s') as retVal",login,password,email); 
 
-         esql.executeUpdate(query);
-         System.out.println ("User successfully created!");
-      }catch(Exception e){
-         System.err.println (e.getMessage ());
-      }
-   }//end
+		String rVal = esql.executeQueryStr(query);
+		
+		if(rVal.isEmpty())
+			System.out.println ("User successfully created!");
+		else
+			System.out.println(rVal);
+
+	}catch(Exception e){
+		System.err.println (e.getMessage ());
+	}
+}//end
 
    /*
     * Check log in credentials for an existing user
     * @return User login or null is the user does not exist
     **/
-   public static String LogIn(ProfNetwork esql){
-      try{
-         System.out.print("\tEnter user login: ");
-         String login = in.readLine();
-         System.out.print("\tEnter user password: ");
-         String password = in.readLine();
+public static String LogIn(ProfNetwork esql){
+	try{
+		System.out.print("\tEnter user login: ");
+		String login = in.readLine();
+		System.out.print("\tEnter user password: ");
+		String password = in.readLine();
 
-         String query = String.format("SELECT * FROM USR WHERE userId = '%s' AND password = '%s'", login, password);
-         int userNum = esql.executeQuery(query);
-	 if (userNum > 0)
-		return login;
-         return null;
-      }catch(Exception e){
-         System.err.println (e.getMessage ());
-         return null;
-      }
-   }//end
+		//String query = String.format("SELECT * FROM USR WHERE userId = '%s' AND password = '%s'", login, password);
+		String query =  String.format("SELECT login('%s','%s') as retVal",login,password);
+		
+		String rVal = esql.executeQueryStr(query);
+
+		if(rVal.isEmpty()){
+			System.out.println("Log In Successful!");
+			return login;
+		}
+			
+		System.out.println(rVal);
+		return null;
+
+	}catch(Exception e){
+		System.err.println (e.getMessage ());
+		return null;
+	}
+}//end
 	
 	public static void FriendList(ProfNetwork esql, String user){
 		try{
