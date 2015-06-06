@@ -411,26 +411,6 @@ public static void CreateUser(ProfNetwork esql){
     * Check log in credentials for an existing user
     * @return User login or null is the user does not exist
     **/
-<<<<<<< HEAD
-   public static String LogIn(ProfNetwork esql){
-      try{
-         System.out.print("\tEnter user login: ");
-         String login = in.readLine();
-         System.out.print("\tEnter user password: ");
-         String password = in.readLine();
-
-         String query = String.format("SELECT * FROM USR WHERE userId = '%s' AND password = '%s'", login, password);
-         int userNum = esql.executeQuery(query);
-	 if (userNum > 0)
-		return login;
-         return null;
-      }catch(Exception e){
-         System.err.println (e.getMessage ());
-         return null;
-      }
-   }//end
-
-=======
 public static String LogIn(ProfNetwork esql){
 	try{
 		System.out.print("\tEnter user login: ");
@@ -508,7 +488,7 @@ public static void otherProfile(ProfNetwork esql){
         //}
     }
 
-	public static void Profile(ProfNetwork esql, String user){
+/*	public static void Profile(ProfNetwork esql, String user){
 		try{
 			//contact
 			String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
@@ -558,7 +538,7 @@ public static void otherProfile(ProfNetwork esql){
 			System.err.println (e.getMessage());
 		}
 
-	}
+	}*/
 
 // Rest of the functions definition go in here
 
