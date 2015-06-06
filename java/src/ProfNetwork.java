@@ -442,8 +442,10 @@ public static String LogIn(ProfNetwork esql){
 		try{
 			System.out.println("\u001b[2J");
 			System.out.flush();
-			String query = String.format("SELECT userid AS FRIEND FROM connection WHERE connectionid = '%s' AND status = 'Accept' UNION SELECT connectionid AS FRIEND FROM connection WHERE userid = '%s' and status = 'Accept';", user,user);
-			//List<List<String> friends = esql.executeQueryAndReturnResult(query);
+			System.out.println("   Friend(s)  ");
+			System.out.println("--------------");
+			//String query = String.format("SELECT userid AS FRIEND FROM connection WHERE connectionid = '%s' AND status = 'Accept' UNION SELECT connectionid AS FRIEND FROM connection WHERE userid = '%s' and status = 'Accept';", user,user);
+			String query = String.format("SELECT getfriends('%s');",user);
 			int friends = esql.executeQueryAndPrintResult(query);
 		}catch(Exception e){
         	 System.err.println (e.getMessage ());
@@ -459,17 +461,27 @@ public static String LogIn(ProfNetwork esql){
 			System.err.println (e.getMessage());
 		}
 	}
-	public static void Profile(ProfNetwork esql, String user){
-		try{
-			//contact
-			String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
-			String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
-			String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
-		}catch(Exception e){
-			System.err.println (e.getMessage());
-		}
-		
+public static void Profile(ProfNetwork esql, String user){
+	try{
+		//contact
+		String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
+		String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
+		String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
+	}catch(Exception e){
+		System.err.println (e.getMessage());
+	}	
+}
+
+public static void otherProfile(ProfNetwork esql){
+	try{
+            System.out.println("Enter the username of the name of the person whose profile you wanto to view.");
+            String otherUser = in.readLine();
+            System.out.println("\n");
+            Profile(esql,otherUser);
+	}catch(Exception e){
+		System.out.println(e.getMessage());
 	}
+}
 
 
 
