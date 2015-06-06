@@ -64,7 +64,6 @@ public class ProfNetwork {
    // This variable can be global for convenience.
    static BufferedReader in = new BufferedReader(
                                 new InputStreamReader(System.in));
-
    /**
     * Creates a new instance of ProfNetwork
     *
@@ -281,7 +280,7 @@ public class ProfNetwork {
 			System.out.println(
 			"\n\n*******************************************************\n" +
 			"   	  	  Welcome - Log In/Create Account		  \n" +
-			"*******************************************************\n");			
+			"*******************************************************\n");
             System.out.println("\033[1;32mMAIN MENU\033[0m");
             System.out.println("---------");
             System.out.println("1. Create user");
@@ -411,7 +410,7 @@ public class ProfNetwork {
          return null;
       }
    }//end
-	
+
 	public static void FriendList(ProfNetwork esql, String user){
 		try{
 			System.out.println("\u001b[2J");
@@ -433,19 +432,64 @@ public class ProfNetwork {
 			System.err.println (e.getMessage());
 		}
 	}
+    public static void DisplayResults(ProfNetwork esql, String educationProfile){
+
+        //for(int i = 1; i <= educationProfile.size(); i++){
+            System.out.println(educationProfile);
+        //}
+    }
+
 	public static void Profile(ProfNetwork esql, String user){
 		try{
 			//contact
 			String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
 			String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
 			String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
+            //Educational Details
+
+            //try counting number of edu details, number of work expr and use
+            //this for the size of our new lists
+
+            String num_edu_details = String.format("SELECT count(distinct userid) FROM educational_details");
+            //System.out.println(num_edu_details);
+
+            String user_edu_details = String.format("SELECT count(institutionName) FROM educational_details WHERE userid = '%s'", user);
+
+            List<List<String>> educationProfile = new ArrayList<List<String>>();
+
+            int edu_number = Integer.parseInt(user_edu_details);
+
+            for (int i = 1; i <= edu_number; i++){
+
+                String user_edu = String.format("SELECT institutionname from educational_details WHERE userid = '%s'", user);
+                //educationProfile.add(user_edu);
+
+            }
+            //placer("Searhing educational details);
+
+
+
+            while(educationProfile.size() <= 0){
+                //look at the query and result
+
+                String query = String.format("SELECT * FROM USR WHERE userid = '%s'", user);
+                educationProfile = esql.executeQueryAndReturnResult(query);
+                if(educationProfile.size() <=0){
+                    System.out.println("\tNo Results.");
+                }
+
+            }
+            System.out.println(educationProfile);
+            //DisplayResults(esql, educationProfile);
+            //ChooseOption(esql, educationProfile, educationProfile.size(), currentUser);
+
+            //Work Experience
+
 		}catch(Exception e){
 			System.err.println (e.getMessage());
 		}
-		
+
 	}
-
-
 
 // Rest of the functions definition go in here
 
