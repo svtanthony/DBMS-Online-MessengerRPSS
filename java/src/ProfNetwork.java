@@ -20,7 +20,7 @@
 			acceptConnection(login, sender)
 			rejectConnection(login, sender)
 
-	2)	PLAN AND IMPLEMENT 
+	2)	PLAN AND IMPLEMENT
 			a)	DELETE ACCOUNT - similar to login = sql does all the work
 			b)	MANAGE MESSAGES
 				switch with options to view summary, read, send, delete, quit
@@ -45,7 +45,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.io.IOException;
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -235,7 +235,7 @@ public int executeAndPrintHeader(String query) throws SQLException{
 	int numCol = rsmd.getColumnCount();
 	int numRow = 0;
 	if(rs.next())
-	{	
+	{
 		String total = rs.getString(1);
 		total = total.replaceAll("\\s+", " ");
 		String[] tokens = total.split("[,]+");
@@ -245,7 +245,7 @@ public int executeAndPrintHeader(String query) throws SQLException{
 	}
 	System.out.println();
 	return numRow;
-}	
+}
 	public String executeQueryStr (String query) throws SQLException {
 		// creates a statement object
 		Statement stmt = this._connection.createStatement();
@@ -548,18 +548,80 @@ public static void ChangePassword(ProfNetwork esql){
 			System.out.println("Password Successfully Changed!");
 		else
 			System.out.println(rVal);
-		
+
 	}catch(Exception e){
 		System.out.println(e.getMessage());
 	}
 }
 public static void deleteAccount(ProfNetwork esql){
-	try{
-		System.out.println("THIS IS WERE WE DELTE ACCOUNT");
-		//******************************************************************************************************************************************************
+
+    try{
+
+		System.out.println("THIS IS WHERE WE DELTE ACCOUNT");
+        System.out.print("\tEnter user login: ");
+		String login = in.readLine();
+		System.out.print("\tEnter user password: ");
+		String password = in.readLine();
+		String query =  String.format("SELECT login('%s','%s') as retVal",login,password);
+		String rVal = esql.executeQueryStr(query);
+
+		if(rVal.isEmpty()){
+			System.out.println("Log In Successful!");
+		    System.out.println("ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT (yes or no)?");
+            String toDelete = in.readLine();
+            String yesDelete = "yes";
+            if(toDelete == yesDelete){
+                System.out.println("Now deleteing the account");
+                String deleteQuery = String.format("DELETE FROM usr WHERE userid = '%s'", login);
+            }
+            else {
+                System.out.println("Did not successfully delete and returning to menu.");
+            }
+            //return login;
+		}
+
+		System.out.println(rVal);
+
 	}catch(Exception e){
-		System.out.println(e.getMessage());
+		System.err.println (e.getMessage ());
 	}
+        //******************************************************************************************************************************************************
+}
+
+public static void sending(ProfNetwork esql) throws IOException {
+    System.out.println("Message: ");
+    String line = "";
+    String paragraph = "";
+
+    InputStreamReader isr = new InputStreamReader(System.in);
+    BufferedReader bufferedReader = new BufferedReader(isr);
+        do{
+            line = bufferedReader.readLine();
+            paragraph = paragraph + line + " ";
+        }while (!line.equals("exit"));
+    isr.close();
+    bufferedReader.close();
+    System.out.println(paragraph);
+
+}
+
+public static void userMessage(ProfNetwork esql){
+    try{
+        switch (readChoice()){
+    		//case 1: Summary(esql); break;
+			//case 2: read(esql); break;
+			case 3: sending(esql); break;
+            //case 4: delete(esql); break;
+			//case 9: keepon = false; break;
+			default : System.out.println("Unrecognized choice!"); break;
+        }//end switch
+
+
+    }catch (Exception e){
+        System.err.println (e.getMessage ());
+
+    }
+
 }
 public static void FriendList(ProfNetwork esql, String user){
 	try{
