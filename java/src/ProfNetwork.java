@@ -418,7 +418,6 @@ public static String LogIn(ProfNetwork esql){
 		System.out.print("\tEnter user password: ");
 		String password = in.readLine();
 
-		//String query = String.format("SELECT * FROM USR WHERE userId = '%s' AND password = '%s'", login, password);
 		String query =  String.format("SELECT login('%s','%s') as retVal",login,password);
 		
 		String rVal = esql.executeQueryStr(query);
@@ -443,7 +442,7 @@ public static String LogIn(ProfNetwork esql){
 			System.out.flush();
 			System.out.println("   Friend(s)  ");
 			System.out.println("--------------");
-			String query = String.format("SELECT getfriends('%s');",user);
+			String query = String.format("SELECT getfriends('%s') as FRIENDLIST;",user);
 			int friends = esql.executeQueryAndPrintResult(query);
 		}catch(Exception e){
         	 System.err.println (e.getMessage ());
