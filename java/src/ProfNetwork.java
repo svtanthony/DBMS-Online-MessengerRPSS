@@ -13,27 +13,23 @@
 /*   SELIK :ALL OTHER FUNCTIONALITY HAS BEEN IMPLEMENTED AS SQL FUNCTIONS WITH ALL THE CHEKING DONE THERE TOO
 			FOR OUR CURRENT TO DO LIST, WE NEED TO IMPLEMENT THE FOLLOWING FUNCTIONALITY (part of queries provided)
 
-	1)	SEARCH PEOPLE
-			QUERY
-				SELECT name FROM usr WHERE lower(name) LIKE lower('%TOY%');
-			DISPLAY
-				???????????????????????????????????????????????????????????
+	1)	USE SQL HELPER FUNCTIONS TO COMPLETE # 2
+			searchUser('%user%')
+			newconnection(login,victim)
+			sendMessage(login, receiver, message)
+			acceptConnection(login, sender)
+			rejectConnection(login, sender)
 
-	2)	VIEW FRIENDS, THEN GO TO FRIENDS PROFILE
-			QUERY - VIEW FRIENDS
-				SELECT userid AS FRIEND(S) FROM connection WHERE connectionid = login and status = 'Accept'
-				UNION SELECT connectionid AS FRIEND(S) FROM connection WHERE userid = login and status = 'Accept';i
-			DISPLAY
-				???????????????????????????????????????????????????????????
-
-	3)	VIEW MESSAGES
-			QUERY - VIEW USERS WITH COMMUNICATIONS
-				SELECT senderid AS user FROM message WHERE receiverid = login
-				UNION SELECT receiverid AS user FROM message where senderid = login;
-			QUERY - VIEW COMMUNICATION BETWEEN USER AND SPECIFIC CONTACT
+	2)	PLAN AND IMPLEMENT 
+			a)	DELETE ACCOUNT - similar to login = sql does all the work
+			b)	MANAGE MESSAGES
+				switch with options to view summary, read, send, delete, quit
+				QUERY - VIEW COMMUNICATION BETWEEN USER AND SPECIFIC CONTACT
 				SELECT senderid, contents, sendtime FROM messages WHERE (senderid = login and receiverid = contact) or (senderid = contact and receiverid = login);
-			DISPLAY
-				???????????????????????????????????????????????????????????
+			c)	MANAGE CONNECTIONS
+				switch with options to view pending, change existing, make new, accept, decline, quit
+
+	3) Make Pretty
 
 */
 //**********************************************************************************************************************************
@@ -135,7 +131,7 @@ public class ProfNetwork {
       int rowCount = 0;
 
       // iterates through the result set and output them to standard out.
-      boolean outputHeader = true;
+      boolean outputHeader = false;
       while (rs.next()){
 	 if(outputHeader){
 	    for(int i = 1; i <= numCol; i++){
@@ -171,26 +167,21 @@ public int executeAndPrintEduc(String query) throws SQLException {
 	int rowCount = 0;
 
 	// iterates through the result set and output them to standard out.
-	boolean outputHeader = true;
-	System.out.println("-----Educational Experience-----");
+	System.out.println("-----Educational Experience-----\n");
     while (rs.next()){
 		for (int i=1; i<=numCol; ++i){
 			String total = rs.getString(i);
 
 			total = total.replaceAll("\\s+", " ");
 			String[] tokens = total.split("[,]+");
-			System.out.print("\033[1;34m");
-            System.out.println("Institution: \t" + tokens[1].replaceAll("\"",""));
-			System.out.println("Major: \t\t" + tokens[2].replaceAll("\"",""));
-			System.out.println("Degree: \t" + tokens[3].replaceAll("\"",""));
-			System.out.println("Start Date: \t" + tokens[4].replaceAll("\"",""));
-			System.out.println("End Date: \t" + tokens[5].replaceAll("[\")]+",""));
-            System.out.print("\033[0m");
-			System.out.println();
-			System.out.println();
+            System.out.println("\033[1;34mInstitution:\033[0m \t" + tokens[1].replaceAll("\"",""));
+			System.out.println("\033[1;34mMajor:\033[0m \t\t" + tokens[2].replaceAll("\"",""));
+			System.out.println("\033[1;34mDegree:\033[0m \t" + tokens[3].replaceAll("\"",""));
+			System.out.println("\033[1;34mStart Date:\033[0m \t" + tokens[4].replaceAll("\"",""));
+			System.out.println("\033[1;34mEnd Date:\033[0m \t" + tokens[5].replaceAll("[\")]+",""));
+			System.out.println("\n");
 			++rowCount;
 		}
-		System.out.println();
     }//end while
     stmt.close ();
 
@@ -214,26 +205,21 @@ public int executeAndPrintWork(String query) throws SQLException {
 	int rowCount = 0;
 
 	// iterates through the result set and output them to standard out.
-	boolean outputHeader = true;
-	System.out.println("-----Work Experience-----");
+	System.out.println("-----Work Experience-----\n");
     while (rs.next()){
 		for (int i=1; i<=numCol; ++i){
 			String total = rs.getString(i);
 
 			total = total.replaceAll("\\s+", " ");
 			String[] tokens = total.split("[,]+");
-			System.out.print("\033[1;35m");
-            System.out.println("Company: \t" + tokens[1].replaceAll("\"",""));
-			System.out.println("Role: \t\t" + tokens[2].replaceAll("\"",""));
-			System.out.println("Location: \t" + tokens[3].replaceAll("\"",""));
-			System.out.println("Start Date: \t" + tokens[4].replaceAll("\"",""));
-			System.out.println("End Date: \t" + tokens[5].replaceAll("[\")]+",""));
-            System.out.print("\033[0m");
-			System.out.println();
+            System.out.println("\033[1;35mCompany:\033[0m \t" + tokens[1].replaceAll("\"",""));
+			System.out.println("\033[1;35mRole: \033[0m\t\t" + tokens[2].replaceAll("\"",""));
+			System.out.println("\033[1;35mLocation:\033[0m \t" + tokens[3].replaceAll("\"",""));
+			System.out.println("\033[1;35mStart Date:\033[0m \t" + tokens[4].replaceAll("\"",""));
+			System.out.println("\033[1;35mEnd Date:\033[0m \t" + tokens[5].replaceAll("[\")]+",""));
 			System.out.println();
 			++rowCount;
 		}
-		System.out.println();
 	}//end while
 	stmt.close ();
 
@@ -241,6 +227,25 @@ public int executeAndPrintWork(String query) throws SQLException {
 
 
 }
+
+public int executeAndPrintHeader(String query) throws SQLException{
+	Statement stmt = this._connection.createStatement();
+	ResultSet rs = stmt.executeQuery(query);
+	ResultSetMetaData rsmd = rs.getMetaData();
+	int numCol = rsmd.getColumnCount();
+	int numRow = 0;
+	if(rs.next())
+	{	
+		String total = rs.getString(1);
+		total = total.replaceAll("\\s+", " ");
+		String[] tokens = total.split("[,]+");
+		System.out.println("\033[1;32mName:\033[0m \t" + tokens[3].replaceAll("[\")]+",""));
+		System.out.println("\033[1;32mEmail: \033[4;34m\t" + tokens[2].replaceAll("[\")]+","") + "\033[0m");
+		numRow++;
+	}
+	System.out.println();
+	return numRow;
+}	
 	public String executeQueryStr (String query) throws SQLException {
 		// creates a statement object
 		Statement stmt = this._connection.createStatement();
@@ -384,15 +389,17 @@ public int executeAndPrintWork(String query) throws SQLException {
 			"*******************************************************\n");
             System.out.println("\033[1;32mMAIN MENU\033[0m");
             System.out.println("---------");
-            System.out.println("1. Create user");
-            System.out.println("2. Log in");
+            System.out.println("1. Create user \t\t 3. Change Password");
+            System.out.println("2. Log in \t\t 4. Delete Account");
             System.out.println("9. < EXIT");
             String authorisedUser = null;
             switch (readChoice()){
-               case 1: CreateUser(esql); break;
-               case 2: authorisedUser = LogIn(esql); break;
-               case 9: keepon = false; break;
-               default : System.out.println("Unrecognized choice!"); break;
+				case 1: CreateUser(esql); break;
+				case 2: authorisedUser = LogIn(esql); break;
+				case 3: ChangePassword(esql); break;
+				case 4: deleteAccount(esql);break;
+				case 9: keepon = false; break;
+				default : System.out.println("Unrecognized choice!"); break;
             }//end switch
             if (authorisedUser != null) {
               boolean usermenu = true;
@@ -404,12 +411,11 @@ public int executeAndPrintWork(String query) throws SQLException {
                 //cout <<"\033[1;32m" << signature <<"\033[3;31m" <<  workingDir << " $ " << "\033[0m";
 		        System.out.println("\033[1;32mMAIN MENU\033[0m");
                 System.out.println("---------");
-                System.out.println("1. Go to Friend List");
-                System.out.println("2. Update Profile");
+                System.out.println("1. Go to Friend List \t\t 6. View Profile");
+                System.out.println("2. Update Profile \t\t 7. View Others Profile");
                 System.out.println("3. Write a new message");
                 System.out.println("4. Send Friend Request");
                 System.out.println("5. View Others Friends List");
-                //System.out.println("5. Clear Screen");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
@@ -418,7 +424,8 @@ public int executeAndPrintWork(String query) throws SQLException {
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
                   case 5: OtherFriendList(esql); break;
-			      case 6: otherProfile(esql); break;
+			      case 6: Profile(esql,authorisedUser); break;
+				  case 7: otherProfile(esql); break;
                   case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -524,42 +531,87 @@ public static String LogIn(ProfNetwork esql){
 		return null;
 	}
 }//end
+public static void ChangePassword(ProfNetwork esql){
+	try{
+		System.out.println("\n\tEnter user Login");
+		String login = in.readLine();
+		System.out.println("\tEnter user old Password");
+		String oldP = in.readLine();
+		System.out.println("\tEnter user new Password");
+		String newP = in.readLine();
 
-	public static void FriendList(ProfNetwork esql, String user){
-		try{
-			System.out.println("\u001b[2J");
-			System.out.flush();
-			System.out.println("   Friend(s)  ");
-			System.out.println("--------------");
-			String query = String.format("SELECT getfriends('%s') as FRIENDLIST;",user);
-			int friends = esql.executeQueryAndPrintResult(query);
-		}catch(Exception e){
-        	 System.err.println (e.getMessage ());
-		}
+		String query = String.format("SELECT newpassword('%s','%s','%s') as retVal",login,oldP,newP);
+
+		String rVal = esql.executeQueryStr(query);
+
+		if(rVal.isEmpty())
+			System.out.println("Password Successfully Changed!");
+		else
+			System.out.println(rVal);
+		
+	}catch(Exception e){
+		System.out.println(e.getMessage());
 	}
-	public static void OtherFriendList(ProfNetwork esql){
-		try{
-			System.out.println("Enter the username of the person you want to view friends for");
-			String otherUser = in.readLine();
-			System.out.println("\n");
-			FriendList(esql,otherUser);
-		}catch(Exception e){
-			System.err.println (e.getMessage());
-		}
+}
+public static void deleteAccount(ProfNetwork esql){
+	try{
+		System.out.println("THIS IS WERE WE DELTE ACCOUNT");
+		//******************************************************************************************************************************************************
+	}catch(Exception e){
+		System.out.println(e.getMessage());
 	}
+}
+public static void FriendList(ProfNetwork esql, String user){
+	try{
+		System.out.println("\u001b[2J");
+		System.out.flush();
+		System.out.println("   Friend(s)  ");
+		System.out.println("--------------");
+		String query = String.format("SELECT getfriends('%s') as FRIENDLIST;",user);
+		int friends = esql.executeQueryAndPrintResult(query);
+		if(friends == 0)
+			System.out.println("None Yet!\n");
+	}catch(Exception e){
+       	 System.err.println (e.getMessage ());
+	}
+}
+public static void OtherFriendList(ProfNetwork esql){
+	try{
+		System.out.println("Enter the username of the person you want to view friends for");
+		String otherUser = in.readLine();
+		System.out.println("\n");
+		FriendList(esql,otherUser);
+	}catch(Exception e){
+		System.err.println (e.getMessage());
+	}
+}
 public static void Profile(ProfNetwork esql, String user){
 	try{
+		//Clear Screen
+		System.out.println("\u001b[2J");
 
-		String query = String.format("SELECT getWork('%s');",user);
-		int friends = esql.executeAndPrintWork(query);
+		//Headder
+		String title = String.format("------'%s''s Profile -------\n",user);
+		System.out.println(title);
+		String query = String.format("SELECT userData('%s');",user);
+		int found = esql.executeAndPrintHeader(query);
 
-        query = String.format("SELECT getEdu('%s');",user);
-        int educate = esql.executeAndPrintEduc(query);
+		if(found == 0)
+			System.out.println("User Does Not Exist!");
+		else{
 
-		//contact
-//		String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
-//		String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
-//		String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
+			//	Work Experience
+			query = String.format("SELECT getWork('%s');",user);
+			int work = esql.executeAndPrintWork(query);
+			if(work == 0)
+				System.out.println("--NONE--\n");
+
+			//	Educational Details
+    	    query = String.format("SELECT getEdu('%s');",user);
+    	    int educate = esql.executeAndPrintEduc(query);
+			if(educate == 0)
+				System.out.println("--NONE--\n");
+		}
 	}catch(Exception e){
 		System.err.println (e.getMessage());
 	}
@@ -576,65 +628,5 @@ public static void otherProfile(ProfNetwork esql){
 	}
 }
 
-    public static void DisplayResults(ProfNetwork esql, String educationProfile){
-
-        //for(int i = 1; i <= educationProfile.size(); i++){
-            System.out.println(educationProfile);
-        //}
-    }
-
-/*	public static void Profile(ProfNetwork esql, String user){
-		try{
-			//contact
-			String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
-			String Emailquery = String.format("SELECT email FROM usr WHERE userid = '%s'", user);
-			String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
-            //Educational Details
-
-            //try counting number of edu details, number of work expr and use
-            //this for the size of our new lists
-
-            String num_edu_details = String.format("SELECT count(distinct userid) FROM educational_details");
-            //System.out.println(num_edu_details);
-
-            String user_edu_details = String.format("SELECT count(institutionName) FROM educational_details WHERE userid = '%s'", user);
-
-            List<List<String>> educationProfile = new ArrayList<List<String>>();
-
-            int edu_number = Integer.parseInt(user_edu_details);
-
-            for (int i = 1; i <= edu_number; i++){
-
-                String user_edu = String.format("SELECT institutionname from educational_details WHERE userid = '%s'", user);
-                //educationProfile.add(user_edu);
-
-            }
-            //placer("Searhing educational details);
-
-
-
-            while(educationProfile.size() <= 0){
-                //look at the query and result
-
-                String query = String.format("SELECT * FROM USR WHERE userid = '%s'", user);
-                educationProfile = esql.executeQueryAndReturnResult(query);
-                if(educationProfile.size() <=0){
-                    System.out.println("\tNo Results.");
-                }
-
-            }
-            System.out.println(educationProfile);
-            //DisplayResults(esql, educationProfile);
-            //ChooseOption(esql, educationProfile, educationProfile.size(), currentUser);
-
-            //Work Experience
-
-		}catch(Exception e){
-			System.err.println (e.getMessage());
-		}
-
-	}*/
-
-// Rest of the functions definition go in here
 
 }//end ProfNetwork
