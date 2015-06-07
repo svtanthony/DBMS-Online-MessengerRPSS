@@ -153,47 +153,6 @@ public class ProfNetwork {
       return rowCount;
    }//end executeQuery
 
-public int executeAndPrintWork(String query) throws SQLException {
-	// Print for Work Experience
-	Statement stmt = this._connection.createStatement ();
-
-	// issues the query instruction
-	ResultSet rs = stmt.executeQuery (query);
-
-	/*  
-	** obtains the metadata object for the returned result set.  The metadata
-	** contains row and column info.
-	*/
-	ResultSetMetaData rsmd = rs.getMetaData ();
-	int numCol = rsmd.getColumnCount ();
-	int rowCount = 0;
-
-	// iterates through the result set and output them to standard out.
-	boolean outputHeader = true;
-	while (rs.next()){
-		for (int i=1; i<=numCol; ++i){
-			String total = rs.getString(i);
-			
-			total = total.replaceAll("\\s+", " ");
-			String[] tokens = total.split("[,]+");
-			System.out.println("Company: \t" + tokens[1].replaceAll("\"",""));
-			System.out.println("Role: \t\t" + tokens[2].replaceAll("\"",""));
-			System.out.println("Location: \t" + tokens[3].replaceAll("\"",""));
-			System.out.println("Start Date: \t" + tokens[4].replaceAll("\"",""));
-			System.out.println("End Date: \t" + tokens[5].replaceAll("[\")]+",""));
-
-			System.out.println();
-			System.out.println();
-			++rowCount;
-		}
-		System.out.println();
-	}//end while
-	stmt.close ();
-	
-	return rowCount;
-
-	
-}
 	public String executeQueryStr (String query) throws SQLException { 
 		// creates a statement object 
 		Statement stmt = this._connection.createStatement(); 
@@ -371,7 +330,7 @@ public int executeAndPrintWork(String query) throws SQLException {
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
                   case 5: OtherFriendList(esql); break;
-					case 6: otherProfile(esql); break;
+					case 6: profile(esql,authorizedUser); break;
                   case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -502,9 +461,34 @@ public static String LogIn(ProfNetwork esql){
 	}
 public static void Profile(ProfNetwork esql, String user){
 	try{
+		Statement stmt = this._connection.createStatement (); 
 
-		String query = String.format("SELECT getWork('%s');",user);
-		int friends = esql.executeAndPrintWork(query);
+		// issues the query instruction
+		ResultSet rs = stmt.executeQuery ("SELECT getWork('%s');");
+
+		/*  
+		** obtains the metadata object for the returned result set.  The metadata
+		** contains row and column info.
+		*/
+		ResultSetMetaData rsmd = rs.getMetaData (); 
+		int numCol = rsmd.getColumnCount (); 
+		int rowCount = 0;
+
+		// iterates through the result set and output them to standard out.
+		boolean outputHeader = true;
+		while (rs.next()){
+			for (int i=1; i<=numCol; ++i){
+				System.out.print (rs.getString (i) + "\t");
+				System.out.println (" | "); 
+				++rowCount;
+			}
+			System.out.println();
+		}//end while
+		stmt.close ();
+
+
+
+
 
 
 		//contact
