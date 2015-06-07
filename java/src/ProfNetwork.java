@@ -589,20 +589,28 @@ public static void deleteAccount(ProfNetwork esql){
 }
 
 public static void sending(ProfNetwork esql) throws IOException {
-    System.out.println("Message: ");
-    String line = "";
-    String paragraph = "";
+    try{
+        System.out.println("Message: ");
+        String line = "";
+        String paragraph = "";
 
-    InputStreamReader isr = new InputStreamReader(System.in);
-    BufferedReader bufferedReader = new BufferedReader(isr);
-        do{
-            line = bufferedReader.readLine();
-            paragraph = paragraph + line + " ";
-        }while (!line.equals("exit"));
-    isr.close();
-    bufferedReader.close();
-    System.out.println(paragraph);
-
+        InputStreamReader isr = new InputStreamReader(System.in);
+        BufferedReader bufferedReader = new BufferedReader(isr);
+            do{
+                line = bufferedReader.readLine();
+                paragraph = paragraph + line + " ";
+            }while (!line.equals("exit"));
+        isr.close();
+        bufferedReader.close();
+//      System.out.println(paragraph);
+        System.out.print("\tEnter user login: ");
+	    String login = in.readLine();
+	    System.out.print("\tEnter user password: ");
+	    String password = in.readLine();
+	    String query =  String.format("SELECT sendMessage('%s','%s', '%s') as retVal",login,password, paragraph);
+    }catch (Exception e){
+        System.err.println(e.getMessage ());
+    }
 }
 
 public static void userMessage(ProfNetwork esql){
