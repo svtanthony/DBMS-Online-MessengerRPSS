@@ -153,14 +153,16 @@ public class ProfNetwork {
       return rowCount;
    }//end executeQuery
 
-public int executeAndPrintWork(String query) throws SQLException {
-	// Print for Work Experience
+
+
+public int executeAndPrintEduc(String query) throws SQLException {
+    // Print for Work Experience
 	Statement stmt = this._connection.createStatement ();
 
 	// issues the query instruction
 	ResultSet rs = stmt.executeQuery (query);
 
-	/*  
+	/*
 	** obtains the metadata object for the returned result set.  The metadata
 	** contains row and column info.
 	*/
@@ -170,18 +172,63 @@ public int executeAndPrintWork(String query) throws SQLException {
 
 	// iterates through the result set and output them to standard out.
 	boolean outputHeader = true;
-	while (rs.next()){
+	System.out.println("-----Educational Experience-----");
+    while (rs.next()){
 		for (int i=1; i<=numCol; ++i){
 			String total = rs.getString(i);
-			
+
 			total = total.replaceAll("\\s+", " ");
 			String[] tokens = total.split("[,]+");
-			System.out.println("Company: \t" + tokens[1].replaceAll("\"",""));
+			System.out.print("\033[1;34m");
+            System.out.println("Institution: \t" + tokens[1].replaceAll("\"",""));
+			System.out.println("Major: \t\t" + tokens[2].replaceAll("\"",""));
+			System.out.println("Degree: \t" + tokens[3].replaceAll("\"",""));
+			System.out.println("Start Date: \t" + tokens[4].replaceAll("\"",""));
+			System.out.println("End Date: \t" + tokens[5].replaceAll("[\")]+",""));
+            System.out.print("\033[0m");
+			System.out.println();
+			System.out.println();
+			++rowCount;
+		}
+		System.out.println();
+    }//end while
+    stmt.close ();
+
+	return rowCount;
+
+}
+
+public int executeAndPrintWork(String query) throws SQLException {
+	// Print for Work Experience
+	Statement stmt = this._connection.createStatement ();
+
+	// issues the query instruction
+	ResultSet rs = stmt.executeQuery (query);
+
+	/*
+	** obtains the metadata object for the returned result set.  The metadata
+	** contains row and column info.
+	*/
+	ResultSetMetaData rsmd = rs.getMetaData ();
+	int numCol = rsmd.getColumnCount ();
+	int rowCount = 0;
+
+	// iterates through the result set and output them to standard out.
+	boolean outputHeader = true;
+	System.out.println("-----Work Experience-----");
+    while (rs.next()){
+		for (int i=1; i<=numCol; ++i){
+			String total = rs.getString(i);
+
+			total = total.replaceAll("\\s+", " ");
+			String[] tokens = total.split("[,]+");
+			System.out.print("\033[1;35m");
+            System.out.println("Company: \t" + tokens[1].replaceAll("\"",""));
 			System.out.println("Role: \t\t" + tokens[2].replaceAll("\"",""));
 			System.out.println("Location: \t" + tokens[3].replaceAll("\"",""));
 			System.out.println("Start Date: \t" + tokens[4].replaceAll("\"",""));
 			System.out.println("End Date: \t" + tokens[5].replaceAll("[\")]+",""));
-
+            System.out.print("\033[0m");
 			System.out.println();
 			System.out.println();
 			++rowCount;
@@ -189,23 +236,23 @@ public int executeAndPrintWork(String query) throws SQLException {
 		System.out.println();
 	}//end while
 	stmt.close ();
-	
+
 	return rowCount;
 
-	
+
 }
-	public String executeQueryStr (String query) throws SQLException { 
-		// creates a statement object 
-		Statement stmt = this._connection.createStatement(); 
+	public String executeQueryStr (String query) throws SQLException {
+		// creates a statement object
+		Statement stmt = this._connection.createStatement();
 
-		// issues the query instruction 
-		ResultSet rs = stmt.executeQuery(query); 
-		rs.next(); 
+		// issues the query instruction
+		ResultSet rs = stmt.executeQuery(query);
+		rs.next();
 
-		String retVal = rs.getString("retVal"); 
-		stmt.close(); 
-		return retVal; 
-	} 
+		String retVal = rs.getString("retVal");
+		stmt.close();
+		return retVal;
+	}
 
    /**
     * Method to execute an input query SQL instruction (i.e. SELECT).  This
@@ -355,7 +402,7 @@ public int executeAndPrintWork(String query) throws SQLException {
 				"              Welcome - User Menu                    \n" +
 				"*******************************************************\n");
                 //cout <<"\033[1;32m" << signature <<"\033[3;31m" <<  workingDir << " $ " << "\033[0m";
-		System.out.println("\033[1;32mMAIN MENU\033[0m");
+		        System.out.println("\033[1;32mMAIN MENU\033[0m");
                 System.out.println("---------");
                 System.out.println("1. Go to Friend List");
                 System.out.println("2. Update Profile");
@@ -371,7 +418,7 @@ public int executeAndPrintWork(String query) throws SQLException {
                   //case 3: NewMessage(esql); break;
                   //case 4: SendRequest(esql); break;
                   case 5: OtherFriendList(esql); break;
-					case 6: otherProfile(esql); break;
+			      case 6: otherProfile(esql); break;
                   case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -427,18 +474,18 @@ public int executeAndPrintWork(String query) throws SQLException {
     **/
 public static void CreateUser(ProfNetwork esql){
       try{
-		System.out.print("\tEnter user login: ");
+		System.out.print("\t\033[1;32mEnter user login: ");
 		String login = in.readLine();
 		System.out.print("\tEnter user password: ");
 		String password = in.readLine();
-		System.out.print("\tEnter user email: ");
+		System.out.print("\tEnter user email: \033[0m");
 		String email = in.readLine();
 
 		//Creating empty contact\block lists for a user
-		String query = String.format("SELECT newAccount('%s','%s','%s') as retVal",login,password,email); 
+		String query = String.format("SELECT newAccount('%s','%s','%s') as retVal",login,password,email);
 
 		String rVal = esql.executeQueryStr(query);
-		
+
 		if(rVal.isEmpty())
 			System.out.println ("User successfully created!");
 		else
@@ -461,14 +508,14 @@ public static String LogIn(ProfNetwork esql){
 		String password = in.readLine();
 
 		String query =  String.format("SELECT login('%s','%s') as retVal",login,password);
-		
+
 		String rVal = esql.executeQueryStr(query);
 
 		if(rVal.isEmpty()){
 			System.out.println("Log In Successful!");
 			return login;
 		}
-			
+
 		System.out.println(rVal);
 		return null;
 
@@ -477,7 +524,7 @@ public static String LogIn(ProfNetwork esql){
 		return null;
 	}
 }//end
-	
+
 	public static void FriendList(ProfNetwork esql, String user){
 		try{
 			System.out.println("\u001b[2J");
@@ -506,6 +553,8 @@ public static void Profile(ProfNetwork esql, String user){
 		String query = String.format("SELECT getWork('%s');",user);
 		int friends = esql.executeAndPrintWork(query);
 
+        query = String.format("SELECT getEdu('%s');",user);
+        int educate = esql.executeAndPrintEduc(query);
 
 		//contact
 //		String Namequery = String.format("SELECT name FROM usr WHERE userid = '%s'", user);
@@ -513,7 +562,7 @@ public static void Profile(ProfNetwork esql, String user){
 //		String Idquery = String.format("SELECT userid FROM usr WHERE userid = '%s'", user);
 	}catch(Exception e){
 		System.err.println (e.getMessage());
-	}	
+	}
 }
 
 public static void otherProfile(ProfNetwork esql){
