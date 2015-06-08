@@ -571,7 +571,7 @@ public static void deleteAccount(ProfNetwork esql){
 	}
         //******************************************************************************************************************************************************
 }
-
+/*
 public static void sendMsg(ProfNetwork esql) throws IOException {
     try{
 
@@ -596,7 +596,7 @@ public static void sendMsg(ProfNetwork esql) throws IOException {
         System.err.println(e.getMessage ());
     }
 }
-
+*/
 public static void viewMsg(ProfNetwork esql, String user){
     //this should return the last five messages
     try{
@@ -641,7 +641,37 @@ public static void recdMsg(ProfNetwork esql, String user){
 
         int recdquery = esql.executeQueryAndPrintResult(rQuery);
 
-    }catch (Exception e){
+    } catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+}
+
+public static void makeMsg(ProfNetwork esql, String user){
+    try{
+        String author = user;
+        System.out.print("To whom:  ");
+        //enter the userid
+        String whom = in.readLine();
+        System.out.println("Message: ");
+        String line = "";
+        String paragraph = "";
+        InputStreamReader isr = new InputStreamReader(System.in);
+        BufferedReader bufferedReader = new BufferedReader(isr);
+        boolean keepRead = true;
+            do{
+                line = bufferedReader.readLine();
+                paragraph = paragraph + line + " ";
+                if(line.equals("EXIT")){
+                    keepRead = false;
+                }
+            //}while (!line.equals("exit"));
+            }while(keepRead == true);
+        isr.close();
+        bufferedReader.close();
+	    //String makeQuery =  String.format("sendMessage('%s','%s', '%s') as retVal", user, whom, paragraph);
+
+        //int insertQuery = esql.executeQueryAndPrintResult(makeQuery);
+    } catch (Exception e){
         System.err.println(e.getMessage());
     }
 }
@@ -663,9 +693,9 @@ public static void msgMenu(ProfNetwork esql, String user){
 
             switch (readChoice()){
     		    case 1: viewMsg(esql, currUser); break;
-			    //case 2: readMsg(esql, currUser); break;
+			    case 2: sentMsg(esql, currUser); break;
 			    case 3: recdMsg(esql, currUser); break;
-                case 4: sendMsg(esql); break;
+                case 4: makeMsg(esql, currUser); break;
                 //case 5: deleteMsg(esql); break;
 			    case 9: notComplete = false; break;
                 default : System.out.println("Unrecognized choice!"); break;
