@@ -407,7 +407,7 @@ public int executeAndPrintHeader(String query) throws SQLException{
                 System.out.println("9. Log out");
                 switch (readChoice()){
                   case 1: FriendList(esql,authorisedUser); break;
-                  //case 2: UpdateProfile(esql); break;
+                  //case 2: UpdateProfile(esql, authorisedUser); break;
                   case 3: msgMenu(esql, authorisedUser); break;
                   //case 4: SendRequest(esql); break;
                   case 5: OtherFriendList(esql); break;
@@ -621,6 +621,7 @@ public static void sentMsg(ProfNetwork esql, String user){
         String sender = user;
         //System.out.println("View messages sent to: ");
         //String receiver = in.readLine();
+        //sendMessage(login, receiver, message)
 
         String squery = String.format("SELECT contents FROM message WHERE senderid = '%s' ORDER BY sendtime DESC;", sender);
 
@@ -655,22 +656,32 @@ public static void makeMsg(ProfNetwork esql, String user){
         System.out.println("Message: ");
         String line = "";
         String paragraph = "";
-        InputStreamReader isr = new InputStreamReader(System.in);
-        BufferedReader bufferedReader = new BufferedReader(isr);
+        //InputStreamReader isr = new InputStreamReader(System.in);
+        //BufferedReader bufferedReader = new BufferedReader(isr);
+
         boolean keepRead = true;
             do{
-                line = bufferedReader.readLine();
-                paragraph = paragraph + line + " ";
+                line = in.readLine();
+                paragraph = paragraph + line + "\n ";
+                //line = bufferedReader.readLine();
+                //paragraph = paragraph + line + " ";
                 if(line.equals("EXIT")){
                     keepRead = false;
                 }
             //}while (!line.equals("exit"));
-            }while(keepRead == true);
-        isr.close();
-        bufferedReader.close();
-	    //String makeQuery =  String.format("sendMessage('%s','%s', '%s') as retVal", user, whom, paragraph);
+            }while(keepRead);
+        //bufferedReader.close();
+        //isr.close();
+	    //bufferedReader.close();
+        //String makeQuery = String.format("INSERT into ");
 
-        //int insertQuery = esql.executeQueryAndPrintResult(makeQuery);
+        //String squery = String.format("SELECT sendMessage('%s', '%s', '%s'", user, whom, paragraph);
+        String makeQuery =  String.format("SELECT sendMessage('%s','%s', '%s') as retVal", user, whom, paragraph);
+
+        //String rVal = esql.executeQueryStr(query);
+
+        String insertQuery = esql.executeQueryStr(makeQuery);
+        System.out.println("Inserted message, returning");
     } catch (Exception e){
         System.err.println(e.getMessage());
     }
@@ -718,6 +729,36 @@ public static void FriendList(ProfNetwork esql, String user){
 	}catch(Exception e){
        	 System.err.println (e.getMessage ());
 	}
+}
+public static void UpdateProfile(ProfNetwork esql, String user){
+    try{
+        boolean notComplete = true;
+        String currUser = user;
+        while(notComplete){
+            System.out.println("\033[1;32mUPDATE MENU\033[0m");
+            System.out.println("--------------");
+            System.out.println("1. Delete Messages");
+            System.out.println("2. Add Education");
+            System.out.println("3. Add Work Experience");
+            System.out.println("4. Send a new message");
+            System.out.println("5. Delete a message");
+            System.out.println(".........................");
+            System.out.println("9. Go back to Main Menu");
+
+            switch (readChoice()){
+    		    case 1: viewMsg(esql, currUser); break;
+			    case 2: sentMsg(esql, currUser); break;
+			    case 3: recdMsg(esql, currUser); break;
+                case 4: makeMsg(esql, currUser); break;
+                //case 5: deleteMsg(esql); break;
+			    case 9: notComplete = false; break;
+                default : System.out.println("Unrecognized choice!"); break;
+            }
+        }
+    }catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+
 }
 public static void OtherFriendList(ProfNetwork esql){
 	try{
