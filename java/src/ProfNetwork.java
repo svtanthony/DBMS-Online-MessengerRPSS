@@ -399,7 +399,7 @@ public int executeAndPrintHeader(String query) throws SQLException{
 		        System.out.println("\033[1;32mMAIN MENU\033[0m");
                 System.out.println("---------");
                 System.out.println("1. Go to Friend List \t\t 6. View Profile");
-                System.out.println("2. Update Profile \t\t 7. View Others Profile");
+                System.out.println("2. View other Profile");
                 System.out.println("3. Go to messages menu");
                 System.out.println("4. Send Friend Request");
                 System.out.println("5. View Others Friends List");
@@ -407,9 +407,9 @@ public int executeAndPrintHeader(String query) throws SQLException{
                 System.out.println("9. Log out");
                 switch (readChoice()){
                   case 1: FriendList(esql,authorisedUser); break;
-                  //case 2: UpdateProfile(esql, authorisedUser); break;
+                  case 2: otherProfile(esql); break;
                   case 3: msgMenu(esql, authorisedUser); break;
-                  //case 4: SendRequest(esql); break;
+                  case 4: SendRequest(esql, authorisedUser); break;
                   case 5: OtherFriendList(esql); break;
 			      case 6: Profile(esql,authorisedUser); break;
 				  case 7: otherProfile(esql); break;
@@ -544,7 +544,7 @@ public static void deleteAccount(ProfNetwork esql){
 
     try{
 
-		System.out.println("THIS IS WHERE WE DELTE ACCOUNT");
+		System.out.println("THIS IS WHERE WE DELETE ACCOUNT");
         System.out.print("\tEnter user login: ");
 		String login = in.readLine();
 		System.out.print("\tEnter user password: ");
@@ -647,6 +647,85 @@ public static void recdMsg(ProfNetwork esql, String user){
     }
 }
 
+public static void SendRequest(ProfNetwork esql, String User){
+    try{
+        //newconnection(login,victim)
+        //acceptConnection(login, sender)
+		//rejectConnection(login, sender)
+        String author = User;
+        System.out.println("Request friendship with(userid) : ");
+        String whom = in.readLine();
+
+        System.out.println("Sending request...");
+
+        String connectQuery = String.format("SELECT newconnection('%s','%s');", author, whom);
+
+        System.out.println("Sent request");
+
+    }catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+
+}
+
+public static void rejectRequest(ProfNetwork esql, String User){
+    try{
+
+        String me = User;
+        System.out.print("Reject request from:  ");
+
+        String from = in.readLine();
+
+        //String sender = String.format("SELECT contents FROM message WHERE receiverid = '%s' AND senderid = '%s'", User);
+
+        System.out.println("Rejecting Request... ");
+
+        //String whom = in.readLine();
+
+        //String makeQuery = String.format("SELECT");
+
+        String rejectQuery =  String.format("SELECT rejectconnection('%s','%s') as retVal", User,from);
+
+        //String rVal = esql.executeQueryStr(query);
+
+        String Query = esql.executeQueryStr(rejectQuery);
+        System.out.println("Rejected request");
+
+    }catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+
+}
+
+public static void acceptRequest(ProfNetwork esql, String User){
+    try{
+
+        String me = User;
+        System.out.print("accept request from:  ");
+
+        String from = in.readLine();
+
+        //String sender = String.format("SELECT contents FROM message WHERE receiverid = '%s' AND senderid = '%s'", User);
+
+        System.out.println("Accepting Request... ");
+
+        //String whom = in.readLine();
+
+        //String makeQuery = String.format("SELECT");
+
+        String rejectQuery =  String.format("SELECT acceptconnection('%s','%s') as retVal", User,from);
+
+        //String rVal = esql.executeQueryStr(query);
+
+        String Query = esql.executeQueryStr(rejectQuery);
+        System.out.println("accepted request");
+
+    }catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+
+}
+
 public static void makeMsg(ProfNetwork esql, String user){
     try{
         String author = user;
@@ -687,6 +766,27 @@ public static void makeMsg(ProfNetwork esql, String user){
     }
 }
 
+public static void deleteMsg(ProfNetwork esql, String viewer){
+    try{
+
+        String viewId = viewer;
+
+        System.out.println("Delete last message from: ");
+        String from = in.readLine();
+
+        System.out.println("Now deleteing the message");
+        String deleteQuery = String.format("DELETE FROM message WHERE receiverid = '%s' AND senderid = '%s' OR receiverid = '%s' AND senderid = '%s';",viewer,from,from,viewer );
+
+        String removeQuery = esql.executeQueryStr(deleteQuery);
+
+
+
+    }catch (Exception e){
+        System.err.println(e.getMessage());
+    }
+
+}
+
 public static void msgMenu(ProfNetwork esql, String user){
     try{
         boolean notComplete = true;
@@ -699,6 +799,8 @@ public static void msgMenu(ProfNetwork esql, String user){
             System.out.println("3. Read Revd Messages");
             System.out.println("4. Send a new message");
             System.out.println("5. Delete a message");
+            System.out.println("6. Reject a request");
+            System.out.println("7. Accept a request");
             System.out.println(".........................");
             System.out.println("9. Go back to Main Menu");
 
@@ -707,7 +809,9 @@ public static void msgMenu(ProfNetwork esql, String user){
 			    case 2: sentMsg(esql, currUser); break;
 			    case 3: recdMsg(esql, currUser); break;
                 case 4: makeMsg(esql, currUser); break;
-                //case 5: deleteMsg(esql); break;
+                case 5: deleteMsg(esql, currUser); break;
+                case 6: rejectRequest(esql, currUser); break;
+                case 7: acceptRequest(esql, currUser); break;
 			    case 9: notComplete = false; break;
                 default : System.out.println("Unrecognized choice!"); break;
             }//end switch
@@ -750,7 +854,7 @@ public static void UpdateProfile(ProfNetwork esql, String user){
 			    case 2: sentMsg(esql, currUser); break;
 			    case 3: recdMsg(esql, currUser); break;
                 case 4: makeMsg(esql, currUser); break;
-                //case 5: deleteMsg(esql); break;
+                //case 5: deleteMsg(esql, currUser); break;
 			    case 9: notComplete = false; break;
                 default : System.out.println("Unrecognized choice!"); break;
             }
