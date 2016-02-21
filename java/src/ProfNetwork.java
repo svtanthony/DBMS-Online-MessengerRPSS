@@ -531,13 +531,17 @@ public static void ChangePassword(ProfNetwork esql){
 
 		String rVal = esql.executeQueryStr(query);
 
-		if(rVal.isEmpty())
+		if(rVal.isEmpty()){
+            System.out.print("\033[1;32m");
 			System.out.println("Password Successfully Changed!");
-		else
+		    System.out.print("\033[0m");
+        }
+        else
 			System.out.println(rVal);
 
 	}catch(Exception e){
 		System.out.println(e.getMessage());
+        System.out.print("");
 	}
 }
 public static void deleteAccount(ProfNetwork esql){
@@ -656,12 +660,17 @@ public static void SendRequest(ProfNetwork esql, String User){
         System.out.println("Request friendship with(userid) : ");
         String whom = in.readLine();
 
-        System.out.println("Sending request...");
+        //System.out.println("Sending request...");
 
-        String connectQuery = String.format("SELECT newconnection('%s','%s');", author, whom);
+        String connectQuery = String.format("SELECT newconnection('%s','%s') as retVal;", author, whom);
+        String rVal = esql.executeQueryStr(connectQuery);
 
-        System.out.println("Sent request");
+        if(rVal.isEmpty()){
+            System.out.println("Sent request");
+        }
 
+        else
+            System.out.println(rVal);
     }catch (Exception e){
         System.err.println(e.getMessage());
     }
